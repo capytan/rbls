@@ -2,7 +2,5 @@
 # frozen_string_literal: true
 
 # List files in current directory
-Dir.entries('.').each do |entry|
-  next if entry.start_with?('.')
-  puts entry
-end
+entries = Dir.entries('.').reject { |e| e.start_with?('.') }
+entries.sort.each { |entry| puts entry }

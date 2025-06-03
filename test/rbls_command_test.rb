@@ -23,4 +23,22 @@ class RblsCommandTest < Minitest::Test
       end
     end
   end
+
+  def test_list_files_in_alphabetical_order
+    Dir.mktmpdir do |dir|
+      Dir.chdir(dir) do
+        # アルファベット順でないファイルを作成
+        File.write('zebra.txt', 'content')
+        File.write('apple.txt', 'content')
+        File.write('banana.rb', 'content')
+
+        output, status = Open3.capture2(File.expand_path('../bin/rbls', __dir__).to_s)
+
+        assert status.success?
+        # 出力を行ごとに分割してアルファベット順を確認
+        lines = output.strip.split("\n")
+        assert_equal ['apple.txt', 'banana.rb', 'zebra.txt'], lines
+      end
+    end
+  end
 end
