@@ -3,6 +3,7 @@
 
 # List files in current directory
 show_all = ARGV.include?('-a')
+reverse_sort = ARGV.include?('-r')
 
 entries = if show_all
             Dir.entries('.')
@@ -10,4 +11,6 @@ entries = if show_all
             Dir.entries('.').reject { |e| e.start_with?('.') }
           end
 
-entries.sort.each { |entry| puts entry }
+sorted_entries = reverse_sort ? entries.sort.reverse : entries.sort
+
+sorted_entries.each { |entry| puts entry }

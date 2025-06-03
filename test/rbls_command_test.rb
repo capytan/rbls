@@ -71,4 +71,27 @@ class RblsCommandTest < Minitest::Test
       end
     end
   end
+
+  def test_reverse_sort_with_r_option
+    Dir.mktmpdir do |dir|
+      Dir.chdir(dir) do
+        # テスト用のファイルを作成
+        File.write('alpha.txt', 'content')
+        File.write('beta.txt', 'content')
+        File.write('gamma.txt', 'content')
+
+        # 通常の場合（アルファベット順）
+        output_normal, status = Open3.capture2(File.expand_path('../bin/rbls', __dir__).to_s)
+        assert status.success?
+        lines_normal = output_normal.strip.split("\n")
+        assert_equal ['alpha.txt', 'beta.txt', 'gamma.txt'], lines_normal
+
+        # -rオプション付き（逆順）
+        output_reverse, status2 = Open3.capture2(File.expand_path('../bin/rbls', __dir__).to_s, '-r')
+        assert status2.success?
+        lines_reverse = output_reverse.strip.split("\n")
+        assert_equal ['gamma.txt', 'beta.txt', 'alpha.txt'], lines_reverse
+      end
+    end
+  end
 end
