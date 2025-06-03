@@ -1,6 +1,10 @@
 AllCops:
   TargetRubyVersion: 3.3
   NewCops: enable
+  SuggestExtensions: false
   Exclude:
     - 'vendor/**/*'
     - 'bin/**/*'
+
+Metrics/MethodLength:
+  Max: 15

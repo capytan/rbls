@@ -1,4 +1,8 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-# bin/rbls - Minimal executable file
+# List files in current directory
+Dir.entries('.').each do |entry|
+  next if entry.start_with?('.')
+  puts entry
+end
