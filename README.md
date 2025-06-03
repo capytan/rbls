@@ -1,5 +1,7 @@
 # rbls
 
+**これはcapytanによるClaude Codeのお試し実装です。**
+
 A Ruby implementation of the `ls` command for listing directory contents.
 
 ## Features
