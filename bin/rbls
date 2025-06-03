@@ -1,10 +1,18 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-# List files in current directory
-show_all = ARGV.include?('-a')
-reverse_sort = ARGV.include?('-r')
+# Parse command line options
+show_all = false
+reverse_sort = false
 
+ARGV.each do |arg|
+  if arg.start_with?('-')
+    show_all = true if arg.include?('a')
+    reverse_sort = true if arg.include?('r')
+  end
+end
+
+# List files in current directory
 entries = if show_all
             Dir.entries('.')
           else

@@ -94,4 +94,40 @@ class RblsCommandTest < Minitest::Test
       end
     end
   end
+
+  def test_combine_options_a_and_r
+    Dir.mktmpdir do |dir|
+      Dir.chdir(dir) do
+        # 隠しファイルと通常ファイルを作成
+        File.write('.alpha', 'content')
+        File.write('.beta', 'content')
+        File.write('gamma.txt', 'content')
+        File.write('delta.txt', 'content')
+
+        # -a -r オプションの組み合わせ（隠しファイルも含めて逆順）
+        output, status = Open3.capture2(File.expand_path('../bin/rbls', __dir__).to_s, '-a', '-r')
+        assert status.success?
+
+        lines = output.strip.split("\n")
+        # 隠しファイルも含まれ、逆順になっていることを確認
+        assert_equal ['gamma.txt', 'delta.txt', '.beta', '.alpha', '..', '.'], lines
+      end
+    end
+  end
+
+  def test_combined_options_format
+    Dir.mktmpdir do |dir|
+      Dir.chdir(dir) do
+        File.write('.hidden', 'content')
+        File.write('visible.txt', 'content')
+
+        # -ar という連結形式のオプション
+        output, status = Open3.capture2(File.expand_path('../bin/rbls', __dir__).to_s, '-ar')
+        assert status.success?
+
+        lines = output.strip.split("\n")
+        assert_equal ['visible.txt', '.hidden', '..', '.'], lines
+      end
+    end
+  end
 end
