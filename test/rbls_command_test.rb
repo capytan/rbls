@@ -41,4 +41,34 @@ class RblsCommandTest < Minitest::Test
       end
     end
   end
+
+  def test_show_hidden_files_with_a_option
+    Dir.mktmpdir do |dir|
+      Dir.chdir(dir) do
+        # 隠しファイルと通常ファイルを作成
+        File.write('.hidden', 'content')
+        File.write('visible.txt', 'content')
+
+        # -aオプション付きで実行
+        output_with_a, status = Open3.capture2(File.expand_path('../bin/rbls', __dir__).to_s, '-a')
+        assert status.success?
+
+        lines = output_with_a.strip.split("\n")
+        assert_includes lines, '.'
+        assert_includes lines, '..'
+        assert_includes lines, '.hidden'
+        assert_includes lines, 'visible.txt'
+
+        # -aオプションなしでは隠しファイルが表示されないことを確認
+        output_without_a, status2 = Open3.capture2(File.expand_path('../bin/rbls', __dir__).to_s)
+        assert status2.success?
+
+        lines2 = output_without_a.strip.split("\n")
+        refute_includes lines2, '.'
+        refute_includes lines2, '..'
+        refute_includes lines2, '.hidden'
+        assert_includes lines2, 'visible.txt'
+      end
+    end
+  end
 end

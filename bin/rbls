@@ -2,5 +2,12 @@
 # frozen_string_literal: true
 
 # List files in current directory
-entries = Dir.entries('.').reject { |e| e.start_with?('.') }
+show_all = ARGV.include?('-a')
+
+entries = if show_all
+            Dir.entries('.')
+          else
+            Dir.entries('.').reject { |e| e.start_with?('.') }
+          end
+
 entries.sort.each { |entry| puts entry }
